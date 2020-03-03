@@ -1,0 +1,31 @@
+<!-- NOT READY YET -->
+
+<launch>
+  
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <rosparam file="$(find kinova_control_ka)/config/VelController.yaml" command="load"/>
+
+
+  <!-- load the controllers -->
+
+ <!-- <node name="kinova_control_ka_talker" pkg="kinova_control_ka" type="talker_frc" output="screen" ns="/col_trans"/>-->
+
+  <node name="kinova_control_ka" pkg="kinova_control_ka" type="kinovaVelHI" output="screen" ns="/col_trans"/>
+
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+	output="screen" ns="/col_trans" args="joint_state_controller
+					  velocity_controller"/>
+  
+   <!-- load urdf-->
+ <arg name="kinova_robotType" default="m1n6s200" />
+  <param name="robot_description" command="$(find xacro)/xacro.py '$(find kinova_description)/urdf/$(arg kinova_robotType)_standalone.xacro'" />
+
+ <!-- <param name="robot_description" textfile="$(find kinova_description)/urdf/myMico.urdf"/>-->
+
+  <!-- convert joint states to TF transforms for rviz, etc 
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" 
+	respawn="false" output="screen">
+    <remap from="/joint_states" to="/pan_tilt/joint_states" />
+  </node> -->
+
+</launch>

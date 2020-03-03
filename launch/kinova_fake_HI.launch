@@ -1,0 +1,20 @@
+<launch>
+  
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <rosparam file="$(find rct_impedance_control)/config/ImpController.yaml" command="load"/>
+
+  <!-- load the controllers -->
+
+  <!-- <node name="kinova_frc_talker" pkg="kinova_hardware_interface" type="talker_frc" output="screen" ns="/imp_ctrl"/> -->
+
+  <node name="kinova_fake_HI" pkg="kinova_hardware_interface" type="kinovaFakeHI" output="screen" ns="/imp_ctrl"/>
+
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+	output="screen" ns="/imp_ctrl" args="joint_state_controller
+					    impedance_controller"/> 
+
+   <!-- load urdf-->
+  <arg name="kinova_robotType" default="m1n6s200" />
+  <param name="robot_description" command="$(find xacro)/xacro.py '$(find kinova_description)/urdf/$(arg kinova_robotType)_standalone.xacro'" />
+
+</launch>

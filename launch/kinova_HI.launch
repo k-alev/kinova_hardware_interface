@@ -1,0 +1,18 @@
+<launch>
+  
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <rosparam file="$(find kinova_control_ka)/config/ColTransController.yaml" command="load"/>
+
+  <!-- load the controllers -->
+  <node name="kinova_HI" pkg="kinova_hardware_interface" type="kinovaHI" output="screen" ns="/col_trans"/>
+
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+	output="screen" ns="/col_trans" args="joint_state_controller
+					  col_trans_controller"/>
+  
+   <!-- load urdf-->
+ <arg name="kinova_robotType" default="m1n6s200" />
+  <param name="robot_description" command="$(find xacro)/xacro.py '$(find kinova_description)/urdf/$(arg kinova_robotType)_standalone.xacro'" />
+
+
+</launch>
